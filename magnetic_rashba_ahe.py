@@ -491,11 +491,11 @@ def main():
         )
 
         print(f"Paper Eq. (69), weak-M     : {paper_eq69_sigma:+.12e}")
-        print(f"Our intrinsic sigma_xy     : {intrinsic_sigma_num:+.12e}")
+        print(f"Our intrinsic sigma_yx     : {intrinsic_sigma_num:+.12e}")
         print(f"intrinsic relative error   : {intrinsic_relative_error:.3%}")
 
         print(f"Paper Eq. (74), weak-M     : {paper_eq74_sigma:+.12e}")
-        print(f"Our extrinsic sigma_xy     : {disorder_sigma_num:+.12e}")
+        print(f"Our extrinsic sigma_yx     : {disorder_sigma_num:+.12e}")
         print(f"extrinsic relative error   : {disorder_relative_error:.3%}")
 
         print(f"Paper Eq. (69) + Eq. (74)  : {paper_weak_M_total:+.12e}")
@@ -514,12 +514,12 @@ def main():
         print("=" * 64)
 
         print(
-            f"intrinsic sigma_xy        : "
+            f"intrinsic sigma_yx        : "
             f"{np.real(sigma_intrinsic[1]):+.12e}"
         )
 
         print(
-            f"disorder-induced sigma_xy : "
+            f"disorder-induced sigma_yx : "
             f"{np.real(sigma_disorder[1]):+.12e}"
         )
 
@@ -583,7 +583,7 @@ def main():
         print(f"sum n^(0)                 : {np.sum(n0):+.3e}")
         print(f"max n^(0) residual        : {np.max(np.abs(residual_n0)):.3e}")
         print(f"n^(0) transverse vy       : {vy_n0:+.12e}")
-        print(f"n^(0) sigma_xy            : {-vy_n0/ELECTRIC_FIELD[0]:+.12e}")
+        print(f"n^(0) sigma_yx            : {-vy_n0/ELECTRIC_FIELD[0]:+.12e}")
 
     # -------------------------------------------------------------------------
     # 7. Assemble retained electric-field-induced density matrix
