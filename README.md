@@ -223,7 +223,7 @@ The implementation currently includes:
 
 The current implementation has been quantitatively benchmarked using **scalar disorder in the magnetic Rashba anomalous Hall problem**. The generalized matrix-disorder implementation has additionally been validated by recovering the scalar limit and tested with momentum-independent Hermitian matrix disorder.
 
-### Current Limitations
+### Current Limitations and Open Numerical Issues
 
 The following parts of the broader formalism are not yet implemented or fully validated:
 
@@ -234,6 +234,17 @@ The following parts of the broader formalism are not yet implemented or fully va
 - Quantitative validation of momentum-dependent matrix disorder.
 - Additional model Hamiltonians beyond the present Rashba benchmark.
 
+The current implementation also has several numerical limitations and open issues:
+
+- **Order-zero diagonal response:** The calculated $n_E^{(0)}$ contribution shows sensitivity to $k$-mesh resolution and scattering broadening and is not yet regarded as quantitatively converged.
+- **Collision-operator null space:** The diagonal-response solver removes the global constant null mode. Additional near-null modes associated with approximately decoupled constant-energy shells may occur for elastic scattering and could contribute to the numerical sensitivity of $n_E^{(0)}$. This possibility remains to be investigated systematically.
+- **Degeneracies:** Different numerical routines are not designed to provide a consistent treatment at exact band degeneracies. Calculations involving degenerate bands require a dedicated degenerate-subspace formulation.
+- **Periodic Brillouin-zone meshes:** The present uniform $k$-mesh is designed for finite-cutoff continuum models. Periodic lattice or Wannier calculations will require a mesh that avoids double counting equivalent Brillouin-zone boundary points.
+- **General disorder potentials:** The generalized disorder interface assumes, but does not currently enforce, the Hermiticity condition
+  $U(\mathbf{k}',\mathbf{k}) = U^\dagger(\mathbf{k},\mathbf{k}')$.
+- **Computational scaling:** Several disorder collision terms involve explicit $(\mathbf{k},\mathbf{k}')$ operations and scale approximately as $N_k^2$, limiting the mesh sizes that can currently be treated efficiently.
+
+
 The framework is therefore intended to provide a **modular foundation for progressively extending the quantum kinetic formalism**, rather than a complete implementation of all multiband transport regimes.
 
 ## 5. Code Architecture
@@ -241,37 +252,44 @@ The framework is therefore intended to provide a **modular foundation for progre
 The code is organized so that the **electronic-structure model is independent of the transport solver**. A model provides $H(\mathbf{k})$ and its momentum derivatives, while the remaining modules construct the quantum kinetic response.
 
 ```text
-quantum_transport/
-├── models/
-│   ├── base.py
-│   └── rashba.py
-│
+quantum-kinetic-transport/
 ├── core/
-│   ├── kspace.py
 │   ├── eigensystem.py
 │   ├── equilibrium.py
-│   └── geometry.py
+│   ├── geometry.py
+│   └── kspace.py
+│
+├── disorder/
+│   ├── base.py
+│   ├── collision.py
+│   ├── matrix.py
+│   ├── matrix_elements.py
+│   ├── scalar.py
+│   └── scattering.py
 │
 ├── driving/
 │   └── electric_field.py
 │
-├── disorder/
+├── models/
 │   ├── base.py
-│   ├── scalar.py
-│   ├── matrix.py
-│   └── collision.py
-│
-├── response/
-│   ├── diagonal.py
-│   ├── coherence.py
-│   └── density_matrix.py
+│   └── rashba.py
 │
 ├── observables/
-│   ├── expectation.py
-│   └── current.py
+│   ├── current.py
+│   └── expectation.py
 │
-└── examples/
-    └── rashba/
+├── response/
+│   ├── coherence.py
+│   ├── density_matrix.py
+│   └── diagonal.py
+│
+├── tests/
+│   └── test_base.py
+│
+├── magnetic_rashba_ahe.py
+├── requirements.txt
+├── README.md
+└── LICENSE
 ```
 
 The calculation follows the modular pipeline:
@@ -420,6 +438,9 @@ demonstrating agreement to machine precision.
 
 
 ### 7.3 Magnetic Rashba Anomalous Hall Response
+
+Throughout this repository, conductivity indices follow $\sigma_{\alpha\beta}=j_\alpha/E_\beta$. Thus the transverse response calculated for an electric field along $x$ is denoted $\sigma_{yx}$. 
+The reference paper denotes the corresponding Hall response as $\sigma_{xy}$; its notation is retained only when referring explicitly to equations from the paper. 
 
 For the benchmark parameters,
 
