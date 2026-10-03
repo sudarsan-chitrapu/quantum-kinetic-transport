@@ -331,7 +331,6 @@ pip install -r requirements.txt
 
 The local `.venv/` directory is excluded from version control through `.gitignore`.
 
----
 
 ### 6.2 Running the Magnetic Rashba Benchmark
 
@@ -343,7 +342,6 @@ python examples/rashba/rashba_test.py
 
 The calculation constructs the $k$-space mesh, diagonalizes the Hamiltonian, evaluates the geometric quantities, constructs the disorder collision operators, solves the kinetic equations, assembles the response density matrix, and evaluates the resulting transport observables.
 
----
 
 ### 6.3 Main Parameters
 
@@ -366,7 +364,6 @@ The magnetic Rashba benchmark is controlled by the following physical and numeri
 
 Increasing `MESH_SHAPE` generally improves numerical convergence, but substantially increases the computational cost of evaluating the disorder collision operator.
 
----
 
 ### 6.4 Output
 
@@ -387,6 +384,182 @@ The benchmark produces several groups of numerical and physical diagnostics:
 - **Hall-response decomposition:** separates the contributions from $n_E^{(-1)}$, $S_{\mathrm{int}}^{(0)}$, $S_{\mathrm{ext}}^{(0)}$, and $n_E^{(0)}$, and verifies that their sum reproduces the response calculated from the assembled density matrix.
 
 The output is designed to expose both the resulting transport coefficients and the numerical consistency of each stage of the quantum kinetic calculation.
+
+## 7. Implementation and Validation Results
+
+The implementation was validated using the magnetic Rashba anomalous Hall problem on a $51\times51$ momentum mesh. The benchmark tests both the physical response predicted by the theory and the numerical consistency of the framework.
+
+### 7.1 Berry Geometry and Numerical Consistency
+
+The numerically evaluated Berry curvature agrees with the analytical magnetic Rashba result to near machine precision:
+
+| Check | Result |
+|---|---:|
+| Maximum Berry-curvature error | $1.95\times10^{-14}$ |
+| $n_E^{(-1)}$ kinetic residual | $4.44\times10^{-11}$ |
+| $S_{\mathrm{int}}$ Hermiticity error | $1.51\times10^{-14}$ |
+| $S_{\mathrm{ext}}$ Hermiticity error | $1.78\times10^{-15}$ |
+| Density-matrix / Berry intrinsic difference | $1.74\times10^{-18}$ |
+| Current-observable consistency | $2.28\times10^{-20}$ |
+
+The agreement between the independently evaluated density-matrix and Berry-curvature intrinsic responses provides an additional check on the implementation of the interband-coherence formalism.
+
+
+### 7.2 Scalar and Generalized Disorder Operators
+
+The generalized matrix-valued disorder collision operator was tested in its scalar limit against the independently implemented optimized scalar collision operator.
+
+For the $51\times51$ calculation,
+
+```text id="n9l3ek"
+max |J_scalar - J_general| = 1.67e-16
+relative difference        = 3.27e-16
+```
+
+demonstrating agreement to machine precision.
+
+
+### 7.3 Magnetic Rashba Anomalous Hall Response
+
+For the benchmark parameters,
+
+```math id="rdlvrm"
+\frac{M}{\alpha k_F}\approx0.1,
+\qquad
+\frac{\alpha k_F}{\mu}\approx0.1,
+```
+
+placing the calculation in the regime used to obtain the weak-$M$ analytical results of the reference paper.
+
+The numerical intrinsic Hall response is
+
+```math id="ay6z4b"
+\sigma_{xy}^{\mathrm{int}}
+=
++7.99818\times10^{-4},
+```
+
+compared with Eq. (69),
+
+```math id="7l9x5p"
+\sigma_{xy}^{(69)}
+=
++7.85970\times10^{-4},
+```
+
+corresponding to a relative difference of **1.76%**.
+
+The numerical disorder-induced response is
+
+```math id="g1y4y6"
+\sigma_{xy}^{\mathrm{ext}}
+=
+-7.91100\times10^{-4},
+```
+
+compared with Eq. (74),
+
+```math id="ljw48j"
+\sigma_{xy}^{(74)}
+=
+-7.85970\times10^{-4},
+```
+
+corresponding to a relative difference of **0.65%**.
+
+The comparison is summarized below:
+
+| Contribution | Analytical | Numerical | Relative Difference |
+|---|---:|---:|---:|
+| Intrinsic — Eq. (69) | $+7.85970\times10^{-4}$ | $+7.99818\times10^{-4}$ | 1.76% |
+| Disorder-induced — Eq. (74) | $-7.85970\times10^{-4}$ | $-7.91100\times10^{-4}$ | 0.65% |
+
+
+### 7.4 Intrinsic–Extrinsic Cancellation
+
+In the weak-$M$ limit, Eq. (75) predicts cancellation of the intrinsic and disorder-induced interband Hall responses:
+
+```math id="syew1x"
+\sigma_{xy}^{\mathrm{int}}
++
+\sigma_{xy}^{\mathrm{ext}}
+\rightarrow 0.
+```
+
+Numerically,
+
+```math id="as1nvs"
+\sigma_{xy}^{\mathrm{int}}
++
+\sigma_{xy}^{\mathrm{ext}}
+=
+8.7182\times10^{-6}.
+```
+
+This corresponds to **98.91% cancellation** between the two independently calculated contributions.
+
+This cancellation provides a particularly sensitive benchmark because the intrinsic and disorder-induced responses originate from different parts of the kinetic equation but must approach equal magnitudes with opposite signs in the analytical limit.
+
+
+### 7.5 Order-Zero Diagonal Response
+
+The order-zero diagonal response $n_E^{(0)}$ is obtained independently from Eq. (49). For the $51\times51$ calculation,
+
+```text id="8e20ce"
+maximum Eq. (49) residual = 5.39e-14
+sum n^(0)                 = 2.71e-15
+```
+
+showing numerical solution of the kinetic equation together with conservation of the total population correction to numerical precision.
+
+The resulting transverse contribution is
+
+```math id="zvc0tx"
+\sigma_{yx}[n_E^{(0)}]
+=
+-3.15395\times10^{-5}.
+```
+
+This term is reported separately from the Rashba Eqs. (68)–(75) interband benchmark. Its magnitude is sensitive to numerical resolution in the present calculations, and its role in the complete Rashba Hall response remains under investigation.
+
+
+### 7.6 Full Density-Matrix Response
+
+The implemented response density matrix is assembled as
+
+```math id="p5djrr"
+\rho_E
+=
+n_E^{(-1)}
++
+n_E^{(0)}
++
+S_{\mathrm{int}}^{(0)}
++
+S_{\mathrm{ext}}^{(0)}.
+```
+
+For the $51\times51$ calculation, its Hermiticity error is
+
+```math id="ekvmb1"
+1.53\times10^{-14}.
+```
+
+The transverse conductivity decomposes as
+
+| Response component | $\sigma_{yx}$ |
+|---|---:|
+| $n_E^{(-1)}$ | $+2.85\times10^{-18}$ |
+| $S_{\mathrm{int}}^{(0)}$ | $+7.99818\times10^{-4}$ |
+| $S_{\mathrm{ext}}^{(0)}$ | $-7.91100\times10^{-4}$ |
+| $n_E^{(0)}$ | $-3.15395\times10^{-5}$ |
+| **Full $\rho_E$** | **$-2.28213\times10^{-5}$** |
+
+The independently evaluated contributions reproduce the conductivity obtained directly from the assembled density matrix with a closure error of
+
+```math id="22mvlg"
+2.78\times10^{-17}.
+```
 
 ## 8. Notes and Issues Identified in the Reference Literature
 
@@ -446,7 +619,6 @@ The numerical implementation independently produces the same sign structure: a *
 
 For transparency, the implementation therefore reports Eq. (68) literally as printed, while Eqs. (69) and (74) are used for the weak-$M$ numerical benchmark and Eq. (75) cancellation test.
 
----
 
 ### 8.2 Order-Zero Diagonal Response in the Rashba Evaluation
 
