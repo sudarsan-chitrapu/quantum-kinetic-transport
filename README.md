@@ -337,7 +337,7 @@ The local `.venv/` directory is excluded from version control through `.gitignor
 From the repository root, run:
 
 ```bash
-python examples/rashba/rashba_test.py
+python magnetic_rashba_ahe.py
 ```
 
 The calculation constructs the $k$-space mesh, diagonalizes the Hamiltonian, evaluates the geometric quantities, constructs the disorder collision operators, solves the kinetic equations, assembles the response density matrix, and evaluates the resulting transport observables.
