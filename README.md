@@ -439,12 +439,14 @@ demonstrating agreement to machine precision.
 
 ### 7.3 Magnetic Rashba Anomalous Hall Response
 
-Throughout this repository, conductivity indices follow $\sigma_{\alpha\beta}=j_\alpha/E_\beta$. Thus the transverse response calculated for an electric field along $x$ is denoted $\sigma_{yx}$. 
-The reference paper denotes the corresponding Hall response as $\sigma_{xy}$; its notation is retained only when referring explicitly to equations from the paper. 
+Throughout this repository, conductivity indices follow
+$\sigma_{\alpha\beta}=j_\alpha/E_\beta$. Thus, for an electric field applied along $x$, the transverse response calculated from $j_y/E_x$ is denoted $\sigma_{yx}$.
+
+The reference paper denotes the corresponding Hall response as $\sigma_{xy}$. The paper's notation is retained below only when referring explicitly to its analytical equations.
 
 For the benchmark parameters,
 
-```math id="rdlvrm"
+```math
 \frac{M}{\alpha k_F}\approx0.1,
 \qquad
 \frac{\alpha k_F}{\mu}\approx0.1,
@@ -454,15 +456,15 @@ placing the calculation in the regime used to obtain the weak-$M$ analytical res
 
 The numerical intrinsic Hall response is
 
-```math id="ay6z4b"
-\sigma_{xy}^{\mathrm{int}}
+```math
+\sigma_{yx}^{\mathrm{int}}
 =
 +7.99818\times10^{-4},
 ```
 
-compared with Eq. (69),
+compared with the analytical result reported in Eq. (69),
 
-```math id="7l9x5p"
+```math
 \sigma_{xy}^{(69)}
 =
 +7.85970\times10^{-4},
@@ -470,17 +472,17 @@ compared with Eq. (69),
 
 corresponding to a relative difference of **1.76%**.
 
-The numerical disorder-induced response is
+The numerical disorder-induced Hall response is
 
-```math id="g1y4y6"
-\sigma_{xy}^{\mathrm{ext}}
+```math
+\sigma_{yx}^{\mathrm{ext}}
 =
 -7.91100\times10^{-4},
 ```
 
-compared with Eq. (74),
+compared with the analytical result reported in Eq. (74),
 
-```math id="ljw48j"
+```math
 \sigma_{xy}^{(74)}
 =
 -7.85970\times10^{-4},
@@ -490,10 +492,10 @@ corresponding to a relative difference of **0.65%**.
 
 The comparison is summarized below:
 
-| Contribution | Analytical | Numerical | Relative Difference |
+| Contribution | Reference-paper result | Numerical result | Relative Difference |
 |---|---:|---:|---:|
-| Intrinsic — Eq. (69) | $+7.85970\times10^{-4}$ | $+7.99818\times10^{-4}$ | 1.76% |
-| Disorder-induced — Eq. (74) | $-7.85970\times10^{-4}$ | $-7.91100\times10^{-4}$ | 0.65% |
+| Intrinsic — Eq. (69), $\sigma_{xy}$ | $+7.85970\times10^{-4}$ | $\sigma_{yx}^{\mathrm{int}}=+7.99818\times10^{-4}$ | 1.76% |
+| Disorder-induced — Eq. (74), $\sigma_{xy}$ | $-7.85970\times10^{-4}$ | $\sigma_{yx}^{\mathrm{ext}}=-7.91100\times10^{-4}$ | 0.65% |
 
 
 ### 7.4 Intrinsic–Extrinsic Cancellation
