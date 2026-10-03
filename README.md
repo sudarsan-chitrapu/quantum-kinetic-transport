@@ -338,7 +338,7 @@ source .venv/bin/activate
 or on **Windows**:
 
 ```bash
-.venv\Scripts\activate
+.venv\Scripts\Activate.ps1
 ```
 
 Install the required dependencies:
@@ -528,22 +528,22 @@ This cancellation provides a particularly sensitive benchmark because the intrin
 
 The order-zero diagonal response $n_E^{(0)}$ is obtained independently from Eq. (49). For the $51\times51$ calculation,
 
-```text id="8e20ce"
+```text
 maximum Eq. (49) residual = 5.39e-14
 sum n^(0)                 = 2.71e-15
 ```
 
-showing numerical solution of the kinetic equation together with conservation of the total population correction to numerical precision.
+showing a small kinetic-equation residual together with a vanishing net population correction to numerical precision.
 
 The resulting transverse contribution is
 
-```math id="zvc0tx"
+```math
 \sigma_{yx}[n_E^{(0)}]
 =
 -3.15395\times10^{-5}.
 ```
 
-This term is reported separately from the Rashba Eqs. (68)–(75) interband benchmark. Its magnitude is sensitive to numerical resolution in the present calculations, and its role in the complete Rashba Hall response remains under investigation.
+This term is reported separately from the Rashba Eqs. (68)–(75) interband benchmark. Its magnitude is sensitive to numerical resolution in the present calculations and is therefore not treated as quantitatively converged. Its role in the complete Rashba Hall response remains under investigation.
 
 
 ### 7.6 Full Density-Matrix Response
